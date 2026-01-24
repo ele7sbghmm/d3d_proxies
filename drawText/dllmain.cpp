@@ -25,151 +25,53 @@
 #pragma comment(linker, "/export:PSGPError=C:\\Windows\\SysWOW64\\d3d9.PSGPError")
 #pragma comment(linker, "/export:PSGPSampleTexture=C:\\Windows\\SysWOW64\\d3d9.PSGPSampleTexture")
 
-// 2. DEFINITIONS
 typedef HRESULT(STDMETHODCALLTYPE* tEndScene)(IDirect3DDevice9*);
 typedef HRESULT(STDMETHODCALLTYPE* tCreateDevice)(IDirect3D9*, UINT, D3DDEVTYPE, HWND, DWORD, D3DPRESENT_PARAMETERS*, IDirect3DDevice9**);
 
 tEndScene oEndScene = nullptr;
 tCreateDevice oCreateDevice = nullptr;
-ID3DXFont* pFont = nullptr;
 
-// 3. THE HOOKED ENDSCENE (The Drawing Room)
-HRESULT STDMETHODCALLTYPE hkEndScene_(IDirect3DDevice9* pDevice) {
-    MessageBoxA(NULL, "", "hkEndScene", MB_OK);
+HRESULT STDMETHODCALLTYPE hkCreateDevice(IDirect3D9* pD3D, UINT Adapter, D3DDEVTYPE DeviceType, HWND hFocusWindow, DWORD BehaviorFlags, D3DPRESENT_PARAMETERS* pPresentationParameters, IDirect3DDevice9** ppReturnedDeviceInterface) {
+	MessageBoxA(NULL, "", "hkCreateDevice", MB_OK);
 
-    if (!pFont) {
-        D3DXCreateFontA(pDevice, 20, 0, FW_BOLD, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial", &pFont);
-    }
+	HRESULT hr = oCreateDevice(pD3D, Adapter, DeviceType, hFocusWindow, BehaviorFlags, pPresentationParameters, ppReturnedDeviceInterface);
 
-    RECT rect = { 10, 10, 300, 50 };
-    pFont->DrawTextA(NULL, "HOOK STATUS: ACTIVE", -1, &rect, DT_NOCLIP, D3DCOLOR_ARGB(255, 0, 255, 0));
+	if (hr == D3D_OK && ppReturnedDeviceInterface != nullptr) {
+		void** vTable = *(void***)(*ppReturnedDeviceInterface);
 
-    return oEndScene(pDevice);
+		int testIndex = 42;
+
+		DWORD old;
+		VirtualProtect(&vTable[testIndex], sizeof(void*), PAGE_EXECUTE_READWRITE, &old);
+		vTable[testIndex] = NULL;
+		VirtualProtect(&testIndex, sizeof(void*), old, &old);
+	}
+	return hr;
 }
-
-// 4. THE HOOKED CREATEDEVICE (The Hijacker)
-HRESULT STDMETHODCALLTYPE hkCreateDevice_(IDirect3D9* pD3D, UINT Adapter, D3DDEVTYPE DeviceType, HWND hFocusWindow, DWORD BehaviorFlags, D3DPRESENT_PARAMETERS* pPresentationParameters, IDirect3DDevice9** ppReturnedDeviceInterface) {
-    MessageBoxA(NULL, "", "hkCreateDevice", MB_OK);
-
-    HRESULT hr = oCreateDevice(pD3D, Adapter, DeviceType, hFocusWindow, BehaviorFlags, pPresentationParameters, ppReturnedDeviceInterface);
-
-    if (hr == D3D_OK && ppReturnedDeviceInterface != nullptr) {
-        void** vTable = *(void***)(*ppReturnedDeviceInterface);
-        DWORD old;
-        VirtualProtect(&vTable[42], sizeof(void*), PAGE_EXECUTE_READWRITE, &old);
-        oEndScene = (tEndScene)vTable[42];
-        //vTable[42] = (void*)hkEndScene;
-        VirtualProtect(&vTable[42], sizeof(void*), old, &old);
-    }
-    return hr;
-}
-
-
-// Inside your MainThread
-DWORD WINAPI MainThread(LPVOID lpParams) {
-    // MessageBoxA(NULL, "", "MainThread", MB_OK);
-
-
-    // 1. Wait for the game to actually initialize its own D3D
-    // If we hook too early, we hook a "clean" VTable that gets overwritten
-
-    // 2. Find the game's d3d9.dll module in its own memory
-    HMODULE d3d9Base = GetModuleHandleA("d3d9.dll");
-    if (!d3d9Base) return 0;
-
-    // 3. We use the "Dummy" method but we DON'T Release it immediately
-    IDirect3D9* pD3D = Direct3DCreate9(D3D_SDK_VERSION);
-    if (pD3D) {
-        D3DPRESENT_PARAMETERS d3dpp = { 0 };
-        d3dpp.Windowed = TRUE;
-        d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-        d3dpp.hDeviceWindow = GetForegroundWindow();
-
-        IDirect3DDevice9* pDummyDevice = NULL;
-        if (pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow,
-            D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &pDummyDevice) == D3D_OK) {
-
-            Sleep(1000);
-
-            // Get the VTable from the dummy
-            void** vTable = *(void***)pDummyDevice;
-
-            // HOOK: Index 42 is EndScene
-            /*DWORD old;
-            VirtualProtect(&vTable[42], sizeof(void*), PAGE_EXECUTE_READWRITE, &old);
-            oEndScene = (tEndScene)vTable[42];
-            vTable[42] = (void*)hkEndScene;
-            VirtualProtect(&vTable[42], sizeof(void*), old, &old);*/
-
-			// for (int i = 0; i < 119; i++) vTable[i] = NULL;
-            
-
-            MessageBoxA(NULL, "", "after vTable", MB_OK);
-
-            // IMPORTANT: If we release pDummyDevice, some games reset the VTable.
-            // Just let it sit in memory.
-        }
-    }
-    return 0;
-}
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
-    switch (ul_reason_for_call) {
-        case DLL_PROCESS_ATTACH: {
-            // Sleep(2000);
-            
-            // DisableThreadLibraryCalls(hModule);=
-            // HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, NULL);=
-            // if (hThread) CloseHandle(hThread);
-            break;
-        }
-        case DLL_PROCESS_DETACH:
-            // Cleanup code if necessary
-            break;
-    }
-    return TRUE;
-}
-
 
 extern "C" IDirect3D9* WINAPI Direct3DCreate9(UINT SDKVersion) {
-    // 1. Manually get the real function from the system folder
-    HMODULE hRealD3D = GetModuleHandleA("C:\\Windows\\SysWOW64\\d3d9.dll");
-    if (!hRealD3D) hRealD3D = LoadLibraryA("C:\\Windows\\SysWOW64\\d3d9.dll");
+	MessageBoxA(NULL, "", "Direct3DCreate9", MB_OK);
 
-    typedef IDirect3D9* (WINAPI* tD3DCreate9)(UINT);
-    tD3DCreate9 oDirect3DCreate9 = (tD3DCreate9)GetProcAddress(hRealD3D, "Direct3DCreate9");
+	HMODULE hRealD3D = LoadLibraryA("C:\\Windows\\SysWOW64\\d3d9.dll");
+	typedef IDirect3D9* (WINAPI* tD3DCreate9)(UINT);
+	tD3DCreate9 oDirect3DCreate9 = (tD3DCreate9)GetProcAddress(hRealD3D, "Direct3DCreate9");
 
-    IDirect3D9* pD3D = oDirect3DCreate9(SDKVersion);
-    if (pD3D) {
-        void** vTable = *(void***)pD3D;
+	IDirect3D9* pD3D = oDirect3DCreate9(SDKVersion);
 
-        DWORD old;
-        VirtualProtect(&vTable[16], sizeof(void*), PAGE_EXECUTE_READWRITE, &old);
-        vTable[16] = NULL;
-        VirtualProtect(&vTable[16], sizeof(void*), old, &old);
-    }
+	if (pD3D) {
+		void** vTable = *(void***)pD3D;
+		DWORD old;
+		VirtualProtect(&vTable[16], sizeof(void*), PAGE_EXECUTE_READWRITE, &old);
+		oCreateDevice = (tCreateDevice)vTable[16];
+		vTable[16] = (void*)hkCreateDevice;
+		VirtualProtect(&vTable[16], sizeof(void*), old, &old);
+	}
 
-    return pD3D;
+	return pD3D;
 }
 
-// 1. PLACE THIS AT THE VERY BOTTOM OF YOUR DLLMAIN.CPP
-// This replaces the pragma and catches the 'Ex' version
-extern "C" HRESULT WINAPI Direct3DCreate9Ex(UINT SDKVersion, IDirect3D9Ex** ppD3D) {
-    HMODULE hRealD3D = GetModuleHandleA("C:\\Windows\\SysWOW64\\d3d9.dll");
-    if (!hRealD3D) hRealD3D = LoadLibraryA("C:\\Windows\\SysWOW64\\d3d9.dll");
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
+	MessageBoxA(NULL, "", "DllMain", MB_OK);
 
-    typedef HRESULT(WINAPI* tDirect3DCreate9Ex)(UINT, IDirect3D9Ex**);
-    auto oDirect3DCreate9Ex = (tDirect3DCreate9Ex)GetProcAddress(hRealD3D, "Direct3DCreate9Ex");
-
-    HRESULT hr = oDirect3DCreate9Ex(SDKVersion, ppD3D);
-    if (hr == S_OK && ppD3D) {
-        void** vTable = *(void***)(*ppD3D);
-
-        // --- BINARY SEARCH HERE ---
-        DWORD old;
-        VirtualProtect(&vTable[16], sizeof(void*), PAGE_EXECUTE_READWRITE, &old);
-        vTable[16] = NULL;
-        VirtualProtect(&vTable[16], sizeof(void*), old, &old);
-    }
-    return hr;
+	return TRUE;
 }

@@ -9,8 +9,8 @@
 
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9d.lib")
-#pragma comment(linker, "/export:Direct3DCreate9=C:\\Windows\\SysWOW64\\d3d9.Direct3DCreate9")
-#pragma comment(linker, "/export:Direct3DCreate9Ex=C:\\Windows\\SysWOW64\\d3d9.Direct3DCreate9Ex")
+// #pragma comment(linker, "/export:Direct3DCreate9=C:\\Windows\\SysWOW64\\d3d9.Direct3DCreate9")
+#pragma comment(linker, "/export:Direct3DCreate9Ex=C:\\Windows\\SysWOW64\\d3d9.Direct3DCreate9Ex") a
 #pragma comment(linker, "/export:D3DPERF_BeginEvent=C:\\Windows\\SysWOW64\\d3d9.D3DPERF_BeginEvent")
 #pragma comment(linker, "/export:D3DPERF_EndEvent=C:\\Windows\\SysWOW64\\d3d9.D3DPERF_EndEvent")
 #pragma comment(linker, "/export:D3DPERF_GetStatus=C:\\Windows\\SysWOW64\\d3d9.D3DPERF_GetStatus")
@@ -81,7 +81,6 @@ extern "C" IDirect3D9* WINAPI Direct3DCreate9(UINT SDKVersion) {
 // Inside your MainThread
 DWORD WINAPI MainThread(LPVOID lpParams) {
     Sleep(1000);
-    MessageBoxA(NULL, "MainThread!", "Success", MB_OK);
 
     // 1. Wait for the game to actually initialize its own D3D
     // If we hook too early, we hook a "clean" VTable that gets overwritten
@@ -111,6 +110,8 @@ DWORD WINAPI MainThread(LPVOID lpParams) {
             oEndScene = (tEndScene)vTable[42];
             vTable[42] = (void*)hkEndScene;
             VirtualProtect(&vTable[42], sizeof(void*), old, &old);
+
+            MessageBoxA(NULL, "after vTable!", "Success", MB_OK);
 
             // IMPORTANT: If we release pDummyDevice, some games reset the VTable.
             // Just let it sit in memory.

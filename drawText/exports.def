@@ -1,0 +1,6 @@
+LIBRARY "d3d8"
+EXPORTS
+    Direct3DCreate8      @1
+    ValidatePixelShader  = C:\Windows\SysWOW64\d3d8.ValidatePixelShader  @2
+    ValidateVertexShader = C:\Windows\SysWOW64\d3d8.ValidateVertexShader @3
+    DebugSetMute         = C:\Windows\SysWOW64\d3d8.DebugSetMute         @4

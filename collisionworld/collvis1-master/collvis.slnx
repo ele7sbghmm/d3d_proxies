@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="collvis.vcxproj" Id="6014fbdd-ef54-44db-a358-e1b9af0537e4" />
+</Solution>

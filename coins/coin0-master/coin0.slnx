@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="coin0.vcxproj" Id="09c881f8-fa4f-4662-9e38-53f3296f461d" />
+</Solution>

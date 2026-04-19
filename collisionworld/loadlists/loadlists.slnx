@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="loadlists.vcxproj" Id="60df9320-9730-4761-8c2d-a1f4c87e6e25" />
+</Solution>

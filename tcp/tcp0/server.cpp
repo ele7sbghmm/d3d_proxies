@@ -1,12 +1,19 @@
 #include "pch.h"
 
+#include <iostream>
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
 #pragma comment(lib, "ws2_32.lib")
+#include <d3d8.h>
+
+#include "server.h"
 
 namespace server {
-  void RunTCPServer() {
+  SOCKET client = INVALID_SOCKET;
+
+  void Run() {
     WSADATA wsa;
     (void)WSAStartup(MAKEWORD(2, 2), &wsa);
 
@@ -21,13 +28,18 @@ namespace server {
     listen(server, 1);
 
     while (true) {
-      SOCKET client = accept(server, nullptr, nullptr);
+      client = accept(server, nullptr, nullptr);
 
       char buf[1024];
-      int len = recv(client, buf, sizeof(buf), 0);
-      send(client, buf, len, 0);
+      while (recv(client, buf, sizeof(buf), 0) > 0) { }
 
       closesocket(client);
+      client = INVALID_SOCKET;
     }
+  }
+
+  void Send_DoPostDynaLoad() {
+    if (client == INVALID_SOCKET) return;
+    send(client, "DoPostDynaLoad: ", 17, 0);
   }
 }

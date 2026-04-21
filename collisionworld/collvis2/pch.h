@@ -10,9 +10,8 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-#include "d3d8.h"
-#include "MinHook.h"
-#pragma comment(lib, "d3d8.lib")
+#include <d3d8.h>
+#include <MinHook.h>
 #pragma comment(lib, "libMinHook.x86.lib")
 
 #endif //PCH_H

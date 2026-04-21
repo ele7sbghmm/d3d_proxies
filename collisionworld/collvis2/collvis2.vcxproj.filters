@@ -21,18 +21,6 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="proxy.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="server.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hooks.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hooks_dx8.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -41,22 +29,5 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="proxy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="server.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hooks.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hooks_dx8.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="d3d8.def">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

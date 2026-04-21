@@ -40,6 +40,6 @@ namespace server {
 
   void Send_DoPostDynaLoad() {
     if (client == INVALID_SOCKET) return;
-    send(client, "DoPostDynaLoad: ", 17, 0);
+    send(client, "DoPostDynaLoad: \n", 18, 0);
   }
 }

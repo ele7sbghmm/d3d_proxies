@@ -16,8 +16,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
   {
   case DLL_PROCESS_ATTACH:
     std::thread(server::Run).detach();
-    MH_Initialize();
 
+    MH_Initialize();
     proxy::init();
     hooks::install_game_hooks();
 

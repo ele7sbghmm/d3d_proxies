@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "proxy.h"
-#include "hooks.h"
+#include "hooks_dx8.h"
 
 #include <d3d8.h>
 
@@ -22,8 +22,7 @@ namespace proxy {
 }
 
 IDirect3D8* WINAPI Direct3DCreate8(UINT SDKVersion) {
-  proxy::init();
   IDirect3D8* d3d = proxy::oDirect3DCreate8(SDKVersion);
-  hooks::install_d3d_hooks(d3d);
+  hooks::d3d::install(d3d);
   return d3d;
 }

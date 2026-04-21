@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="collvis2.vcxproj" />
+  <Project Path="collvis2.vcxproj" Id="80d019f7-7327-4a5f-a0d9-632caf81c3df" />
 </Solution>

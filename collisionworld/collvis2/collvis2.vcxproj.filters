@@ -21,6 +21,18 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="proxy.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="context.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shar.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -29,5 +41,19 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="proxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="d3d8.def">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -16,35 +16,30 @@ struct Vertex {
    = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_SPECULAR;
 };
 
-struct NodeGeom {
-  struct Range { std::size_t start, count; };
-
-  Shar::tMark last_frame_mark;
-  Range fence_range;
-};
-
 class Context {
 public:
   Context() = default;
   Context(IDirect3DDevice8*);
   void Init();
-  void Commit();
-  void Iter(Vertex*);
-  void BakeFences(Vertex*, Shar::SpatialNode&, std::size_t, bool);
-  void RecolorFences(Vertex*, NodeGeom&, Shar::tMark);
+  void Commit(D3DVECTOR&, float&, int);
+  void Draw();
+  void Iter(Vertex*, D3DVECTOR&, float&, int);
+  void BakeFences(Vertex*, Shar::SpatialNode&, bool, D3DVECTOR&, float);
 
+  inline static constexpr std::size_t MaxVtx = 10000000;
+  inline static constexpr std::size_t LineOffs = 5000000;
+  inline static constexpr std::size_t MaxCollidable = 8;
+  
   ComPtr<IDirect3DDevice8> m_device{};
   ComPtr<IDirect3DVertexBuffer8> m_vb{};
-  ComPtr<IDirect3DIndexBuffer8> m_ib{};
+  D3DMATERIAL8 m_mat{};
+  DWORD m_state_block{};
+
   std::size_t m_vtx_cursor = 0;
-
-  NodeGeom m_node_geoms[10000]{};
-
-  inline static constexpr std::size_t MAX_VTX = 1000000;
-  inline static constexpr std::size_t MAX_IDX = 1000000;
+  std::size_t m_line_cursor = LineOffs;
+  std::size_t m_collidable_count = 0;
 
   bool m_initialized = false;
-  bool m_baked = false;
 };
 
 inline Context g_context;

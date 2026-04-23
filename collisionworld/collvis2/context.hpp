@@ -26,8 +26,10 @@ public:
   void Iter(Vertex*, D3DVECTOR&, float&, int);
   void BakeFences(Vertex*, Shar::SpatialNode&, bool, D3DVECTOR&, float);
 
-  inline static constexpr std::size_t MaxVtx = 10000000;
-  inline static constexpr std::size_t LineOffs = 5000000;
+  inline static constexpr std::size_t MaxVtx        = 10000000;
+  inline static constexpr std::size_t PassiveOffset = 0;
+  inline static constexpr std::size_t ActiveOffset  = 2000000;
+  inline static constexpr std::size_t LineOffs      = 5000000;
   inline static constexpr std::size_t MaxCollidable = 8;
   
   ComPtr<IDirect3DDevice8> m_device{};
@@ -35,9 +37,10 @@ public:
   D3DMATERIAL8 m_mat{};
   DWORD m_state_block{};
 
-  std::size_t m_vtx_cursor = 0;
-  std::size_t m_line_cursor = LineOffs;
-  std::size_t m_collidable_count = 0;
+  std::size_t m_passive_cursor = PassiveOffset;
+  std::size_t m_active_cursor  = ActiveOffset;
+  std::size_t m_line_cursor    = LineOffs;
+  std::size_t m_count_in_collidable_range = 0;
 
   bool m_initialized = false;
 };

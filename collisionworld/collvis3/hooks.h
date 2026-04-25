@@ -5,11 +5,8 @@
 #include <cstdint>
 #include "renderer.h"
 
-void __stdcall bake(shar::FenceEntityDSG* fence, D3DVECTOR* position, float* radius, std::int32_t area_index, std::uint32_t flags) {
-  #define X86_ZF (1 << 6);
-  bool eq = flags & X86_ZF;
-
-  g_renderer.Bake(fence, position, radius, eq, area_index);
+void __stdcall bake(shar::FenceEntityDSG* fence, float range, float distance_to, D3DVECTOR* position, int area_index) {
+  g_renderer.Bake(fence, range, distance_to, position, area_index);
 }
 
 void __stdcall end() {
@@ -18,32 +15,33 @@ void __stdcall end() {
 
 namespace hooks {
   namespace FindFenceElems {
-    void* addr = (void*)0x4b4bb0;
+    void* addr = (void*)0x4b4ba3; // fcompp
     void* orig = nullptr;
     void __declspec(naked) hook() {
       __asm {
         pushad
-        pushfd
 
-        mov     eax, [esp + 0x5c + 0x24]         // return address
-        cmp     eax, 0x4de265             // SubmitFencePiecesPseudoCallback
+        mov     eax, [esp + 0x5c + 0x20]  // return address
+        cmp     eax, 0x4de265             // from SubmitFencePiecesPseudoCallback
         jne     Trampoline                // wrong caller
 
-        lea     eax, [esp + 0xa0 + 0x24]
+        lea     eax, [esp + 0xa0 + 0x20]
 
-        push    [esp]                    // flags
-        push    [eax + 8]                // int             area index
-        lea     ebx, [eax + 4]
-        push    ebx                      // float*          radius
-        push    [eax]                    // D3DVECTOR*      position
+        push    [eax + 8]                 // int             area index
+        push    [eax]                     // D3DVECTOR*      position
+        
+        sub     esp, 8
+        fxch    st(1)
+        fst     float ptr [esp+4]         // float           distance to fence
+        fxch    st(1)
+        fst     float ptr [esp]           // float           fence's activate distance
 
         mov     eax, [edx + 0x50]
-        push    [eax + ecx * 4]          // FenceEntityDSG*
+        push    [eax + ecx * 4]           // FenceEntityDSG*
 
         call    bake
 
       Trampoline :
-        popfd
         popad
 
         jmp     orig
@@ -54,9 +52,11 @@ namespace hooks {
       MH_EnableHook((void*)addr);
     }
   }
-
-  namespace RenderTransparent {
-    void* addr = (void*)0x4aadc2;
+  #define OPAQUE 
+  #define TRANSPARENT 0x4aadc2
+  #define SHOW_TREE 0x4aadc2;
+  namespace Render {
+    void* addr = (void*)SHOW_TREE;
     void* orig = nullptr;
     void __declspec(naked) hook() {
       __asm {
@@ -74,6 +74,6 @@ namespace hooks {
 
   inline void install_all() {
     FindFenceElems::install();
-    RenderTransparent::install();
+    Render::install();
   }
 }

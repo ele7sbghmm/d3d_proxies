@@ -118,7 +118,7 @@ void Renderer::Bake(shar::FenceEntityDSG* fence, float range, float distance_to,
   std::size_t lvi = m_line_vtx_cursor;
 
   float top = position->y + 5.f;
-  float bot = position->y - 0.f;
+  float bot = position->y - 1.f;
   const D3DVECTOR& s = fence->mStartPoint;
   const D3DVECTOR& e = fence->mEndPoint;
   const D3DVECTOR& n = fence->mNormal;

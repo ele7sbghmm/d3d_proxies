@@ -5,7 +5,7 @@
 #include <d3d9.h>
 
 IDirect3D9* WINAPI Direct3DCreate9(UINT SDKVersion) {
-  using Direct3DCreate9_t = IDirect3D9*(WINAPI*)(UINT SDKVersion);
+  using Direct3DCreate9_t = IDirect3D9*(WINAPI*)(UINT);
   static Direct3DCreate9_t oDirect3DCreate9 = nullptr;
 
   if (!oDirect3DCreate9) {
@@ -28,14 +28,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
                      )
 {
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
-    }
-    return TRUE;
+  switch (ul_reason_for_call)
+  {
+  case DLL_PROCESS_ATTACH:
+  case DLL_THREAD_ATTACH:
+  case DLL_THREAD_DETACH:
+  case DLL_PROCESS_DETACH:
+      break;
+  }
+  return TRUE;
 }
 

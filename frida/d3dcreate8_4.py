@@ -1,51 +1,31 @@
-import frida, sys, time
+import frida, sys
 
-TARGET = "Simpsons.exe"
-
-SCRIPT = """
-    var d3d8 = Process.findModuleByName('d3d8.dll');
-    if (d3d8) {
-        send('d3d8.dll loaded, hooking...');
-        
-        var exports = d3d8.enumerateExports();
-        exports.forEach(function(exp) {
-            send('export: ' + exp.name + 'address: ' + exp.address);
-            if (exp.name === 'Direct3DCreate8') {
-                send('hooking Direct3DCreate8 at: ' + exp.address);
-                Interceptor.attach(exp.address, {
-                    onEnter(args) {
-                        send('Direct3DCreate8 called, SDKVersion: ' + args[0].toInt32());
-                    },
-                    onLeave(retval) {
-                        send('Direct3DCreate8 returned: ' + retval);
-                    }
-                });
-            }
-        });
-    }
-"""
+device = frida.get_local_device()
 
 def on_message(message, data):
     print(message)
 
-print(f"Waiting for {TARGET}...")
+def on_child_added(child):
+    print(f"child spawned: {child.pid} {child.pid}")
+    session = device.attach(child.pid)
+    script = session.create_script(SCRIPT)
+    script.on('message', on_message)
+    script.load()
+    device.resume(child.pid)
 
-device = frida.get_local_device()
+SCRIPT = """
+    var d3d8 = Process.findModuleByName('d3d8.dll');
+    if (d3d8) {
+        send('d3d8.dll already loaded');
+    } else {
+        send('d3d8.dll not loaded yet--too early');
+    }
+"""
 
-while True:
-    try:
-        for process in device.enumerate_processes():
-            if process.name.lower() == TARGET.lower():
-                print(f"Found {TARGET} pid:{process.pid}, attaching...")
-                session = device.attach(process.pid)
-                script = session.create_script(SCRIPT)
-                script.on('message', on_message)
-                script.load()
-                print("Hooked, waiting for calls...")
-                sys.stdin.read()
-    except frida.ProcessNotFoundError:
-        pass
-    except Exception as e:
-        print(e)
-    
-    time.sleep(0.1)
+pid = device.spawn(r"C:\Users\imw\Desktop\mi\donut\lml_1-27-1\lml_1-27-1.exe")
+session = device.attach(pid)
+device.enable_spawn_gating()
+device.on('child-added', on_child_added)
+device.resume(pid)
+
+sys.stdin.read()

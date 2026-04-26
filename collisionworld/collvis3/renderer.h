@@ -63,8 +63,8 @@ void Renderer::Init() {
   m_device->CreateStateBlock(D3DSBT_ALL, &m_state_block_token);
 
   #define _ 0.f
-  #define D .2f
-  #define E .9f
+  #define D .3f
+  #define E .6f
   m_noncollidable.Diffuse  = { D, D, D, _ };
   m_noncollidable.Ambient  = { _, _, _, _ };
   m_noncollidable.Specular = { _, _, _, _ };
@@ -105,17 +105,13 @@ void Renderer::Draw() {
   m_device->SetStreamSource(0, m_vb.Get(), sizeof(Vtx));
   m_device->SetVertexShader(Vtx::FVF);
 
-  //m_device->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR2);
-  //m_device->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_COLOR2);
-  //m_device->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_COLOR2);
-  //m_device->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE, D3DMCS_MATERIAL);
-  m_device->SetRenderState(D3DRS_AMBIENT, NULL);
+  m_device->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
+  m_device->SetRenderState(D3DRS_LIGHTING, TRUE);
+  m_device->SetRenderState(D3DRS_COLORVERTEX, FALSE);
 
   m_device->SetTexture(0, NULL);
   m_device->SetRenderState(D3DRS_ZENABLE, TRUE);
   m_device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-  m_device->SetRenderState(D3DRS_LIGHTING, TRUE);
-  m_device->SetRenderState(D3DRS_COLORVERTEX, FALSE);
   m_device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
   m_device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
   m_device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);

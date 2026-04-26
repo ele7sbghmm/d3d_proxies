@@ -13,6 +13,7 @@ IDirect3D9* WINAPI Direct3DCreate9(UINT SDKVersion) {
     GetSystemDirectoryA(path, MAX_PATH);
     strcat_s(path, "\\d3d9.dll");
     HMODULE hModule = LoadLibraryA(path);
+    if (!hModule) return nullptr;
 
     oDirect3DCreate9 = (Direct3DCreate9_t)GetProcAddress(hModule, "Direct3DCreate9");
   }

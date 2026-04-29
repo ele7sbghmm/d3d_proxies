@@ -17,6 +17,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         std::thread(server::Run).detach();
         MH_Initialize();
         hooks::install_all();
+
+        AllocConsole();
+        FILE* f;
+        freopen_s(&f, "CONOUT$", "w", stdout);
+
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
@@ -25,4 +30,3 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     }
     return TRUE;
 }
-

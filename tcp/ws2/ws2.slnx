@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="ws2.vcxproj" />
+  <Project Path="../../../../../../Desktop/mi/GitHub/d3d8_proxies_shar/tcp/ws2/ws2.vcxproj" Id="fd5c568c-60a0-4da7-a71a-5864a98c6ed6" />
 </Solution>

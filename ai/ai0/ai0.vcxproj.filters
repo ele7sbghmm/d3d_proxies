@@ -21,10 +21,13 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="server.h">
+    <ClInclude Include="shar.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="www.h">
+    <ClInclude Include="ai.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,7 +38,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dx8.cpp">
+    <ClCompile Include="proxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

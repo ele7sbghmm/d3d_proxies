@@ -144,7 +144,7 @@ namespace shar {
         float mDesiredSpeedKmh;
         float mSecondsSinceLastDoCatchUp;
         CatchupParams mCatchupParams; // 374
-        rmt::Vector mDesination;
+        rmt::Vector mDestination;
         rmt::Vector mNextDestination;
         unsigned int mStartStuckTime;
         unsigned int mNextStuckTime;

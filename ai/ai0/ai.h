@@ -4,6 +4,9 @@
 #include <wrl/client.h>
 #include <d3dx8.h>
 
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx8.h>
 #include "shar.h"
 
 using Microsoft::WRL::ComPtr;
@@ -11,12 +14,12 @@ using Microsoft::WRL::ComPtr;
 shar::d3dDisplay* get_shar_d3dDisplay() { return *(shar::d3dDisplay**)0x65ef5c; }
 
 struct Vtx {
-    D3DVECTOR xyz;
+    D3DXVECTOR3 xyz;
     D3DCOLOR c;
     static constexpr DWORD FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
 };
 
-void draw_circle(Vtx* data, std::size_t* vtx_n, D3DVECTOR pos, float r, D3DCOLOR c) {
+void draw_circle(Vtx* data, std::size_t* vtx_n, D3DXVECTOR3 pos, float r, D3DCOLOR c) {
     std::size_t n = *vtx_n;
 
     int sides = 72;
@@ -34,6 +37,13 @@ void draw_circle(Vtx* data, std::size_t* vtx_n, D3DVECTOR pos, float r, D3DCOLOR
     *vtx_n = n;
 }
 
+//WNDPROC oWndProc;
+//LRESULT __stdcall hWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+//    extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
+//    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) return true;
+//    return CallWindowProc(oWndProc, hWnd, msg, wParam, lParam);
+//}
+
 class Ai {
 public:
     Ai() = default;
@@ -46,11 +56,21 @@ public:
 
         m_device->CreateStateBlock(D3DSBT_ALL, &m_sbt);
 
+        //ImGui::CreateContext();
+        //ImGui_ImplWin32_Init(GetActiveWindow());
+        //ImGui_ImplDX8_Init(m_device.Get());
+        //oWndProc = (WNDPROC)SetWindowLongPtr(GetActiveWindow(), GWLP_WNDPROC, (LONG_PTR)hWndProc);
+
         m_inited = true;
     }
     void populate() {
         if (!m_inited)
             init();
+
+        //ImGui_ImplWin32_NewFrame();
+        //ImGui_ImplDX8_NewFrame();
+        //ImGui::NewFrame();
+        //ImGui::GetIO().MouseDrawCursor = true;
 
         Vtx* data = {};
         m_vb->Lock(0, 0, (BYTE**)&data, D3DLOCK_NOOVERWRITE);
@@ -70,14 +90,32 @@ public:
         for (int i = 0; i < ms->mNumVehicles; ++i) {
             shar::MissionStage::VehicleInfo vi = ms->mVehicles[i];
             if (vi.vehicleAI == nullptr) continue;
+            shar::VehicleAI* vai = vi.vehicleAI;
 
-            for (int j = 0; j < vi.vehicleAI->mNumSegments; ++j) {
-                shar::Segment s = vi.vehicleAI->mSegments[j];
-                data[m_vtx_n++] = { s.mStart, 0xff00ff00 };
-                data[m_vtx_n++] = { s.mEnd, 0xff00ff00 };
+            for (int j = 0; j < vai->mNumSegments; ++j) {
+                shar::Segment s = vai->mSegments[j];
+                D3DCOLOR c = s.mType == 0 ? 0xff00ffff
+                    : s.mType == 1 ? 0xff00ff00
+                    : s.mType == 2 ? 0xff0000ff
+                    : throw;
+                data[m_vtx_n++] = { s.mStart, c };
+                data[m_vtx_n++] = { s.mEnd, c };
             }
+
+            D3DXVECTOR3& d = vai->mDestination;
+            D3DXVECTOR3& nd = vai->mNextDestination;
+
+            data[m_vtx_n++] = { { d.x + 2.f, d.y, d.z }, 0xffffff00 };
+            data[m_vtx_n++] = { { d.x - 2.f, d.y, d.z }, 0xffffff00 };
+            data[m_vtx_n++] = { { d.x, d.y, d.z + 2.f }, 0xffffff00 };
+            data[m_vtx_n++] = { { d.x, d.y, d.z - 2.f }, 0xffffff00 };
+
+            data[m_vtx_n++] = { { nd.x + 2.f, nd.y, nd.z }, 0xffffffff };
+            data[m_vtx_n++] = { { nd.x - 2.f, nd.y, nd.z }, 0xffffffff };
+            data[m_vtx_n++] = { { nd.x, nd.y, nd.z + 2.f }, 0xffffffff };
+            data[m_vtx_n++] = { { nd.x, nd.y, nd.z - 2.f }, 0xffffffff };
             
-            if (vi.vehicleAI->mType == shar::VehicleAI::AI_WAYPOINT) {
+            if (vai->mType == shar::VehicleAI::AI_WAYPOINT) {
                 auto* ai = static_cast<shar::WaypointAI*>(vi.vehicleAI);
                 for (int j = 0; j < ai->miNumWayPoints; ++j) {
                     shar::WaypointAI::WayPoint wp = ai->mpWayPoints[j];
@@ -87,10 +125,8 @@ public:
                         draw_circle(data, &m_vtx_n, wp.lco->mLocation, ai->mTriggerRadius, c);
                     }
                     if (wp.seg) {
-                        D3DXVECTOR3 start = (wp.seg->mCorners[0] + wp.seg->mCorners[3]);
-                        D3DXVECTOR3 end = (wp.seg->mCorners[1] + wp.seg->mCorners[2]);
-                        start *= .5f;
-                        end *= .5f;
+                        D3DXVECTOR3 start = .5f * (wp.seg->mCorners[0] + wp.seg->mCorners[3]);
+                        D3DXVECTOR3 end = .5f * (wp.seg->mCorners[1] + wp.seg->mCorners[2]);
 
                         //data[m_vtx_n++] = { start, c };
                         //data[m_vtx_n++] = { end, c };
@@ -110,7 +146,6 @@ public:
         m_device->SetTexture(0, NULL);
 
         DWORD oLighting, oColorVertex, oAlphaBlendEnable, oAlphaTestEnable, oZFunc;
-
         m_device->GetRenderState(D3DRS_LIGHTING, &oLighting);
         m_device->GetRenderState(D3DRS_COLORVERTEX, &oColorVertex);
         m_device->GetRenderState(D3DRS_ALPHABLENDENABLE, &oAlphaBlendEnable);

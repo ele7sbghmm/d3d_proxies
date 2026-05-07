@@ -5,35 +5,19 @@
 #pragma comment(lib, "d3dx8.lib")
 #pragma comment(lib, "libMinhook.x86.lib")
 
+#include "hooks.h"
+
+float factor = .9f;
+
 using SetTransform_t = HRESULT(__stdcall*)(IDirect3DDevice8*,D3DTRANSFORMSTATETYPE,D3DMATRIX*);
 using CreateDevice_t = HRESULT(__stdcall*)(IDirect3D8*,UINT,D3DDEVTYPE,HWND,DWORD,D3DPRESENT_PARAMETERS*,IDirect3DDevice8**);
 SetTransform_t oSetTransform = nullptr;
 CreateDevice_t oCreateDevice = nullptr;
 
 HRESULT __stdcall hSetTransform(IDirect3DDevice8* device, D3DTRANSFORMSTATETYPE State, D3DMATRIX* pMatrix) {
-    D3DXMATRIX mod = *pMatrix;
-
-    if (State == D3DTS_VIEW) {
-        D3DXMATRIX mat;
-        D3DXVECTOR3 eye, lookat, up;
-        float camX = -pMatrix->_41;
-        float camZ = -pMatrix->_43;
-
-        eye = { camX, 500.f, camZ };
-        lookat = { camX, 0.f, camZ };
-        up = { 0., 0.f, 1.f };
-
-        D3DXMatrixLookAtLH(&mat, &eye, &lookat, &up);
-        mod = mat;
-    }
-
     if (State == D3DTS_PROJECTION) {
-        D3DXMATRIX mat;
-        D3DXMatrixOrthoLH(&mat, 80.f, 60.f, 1.f, 2000.f);
-        mod = mat;
     }
-
-    return oSetTransform(device, State, &mod);
+    return oSetTransform(device, State, pMatrix);
 }
 
 HRESULT __stdcall hCreateDevice(IDirect3D8* d3d, UINT Adapter, D3DDEVTYPE DeviceType, HWND hWnd, DWORD BehaviorFlags, D3DPRESENT_PARAMETERS* pPresentationParameters, IDirect3DDevice8** ppReturnedDeviceInterface) {
@@ -66,5 +50,8 @@ IDirect3D8* __stdcall Direct3DCreate8(UINT SDKVersion) {
     MH_Initialize();
     MH_CreateHook(vftable[15], hCreateDevice, (void**)&oCreateDevice);
     MH_EnableHook(vftable[15]);
+
+    //hooks::pddi_set_projection_mode::inject();
+
     return d3d;
 }

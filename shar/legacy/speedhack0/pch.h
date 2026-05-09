@@ -16,4 +16,8 @@
 #include "d3dx8.h"
 #pragma comment(lib, "d3dx8.lib")
 
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx8.h"
+
 #endif //PCH_H

@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="speedhack0.vcxproj" />
+  <Project Path="speedhack0.vcxproj" Id="688b8336-c4ba-48ba-94ca-82b05a77f88e" />
 </Solution>

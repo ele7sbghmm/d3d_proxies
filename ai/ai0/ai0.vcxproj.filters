@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{86a36113-caed-4800-a7e7-8dd1c809a996}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -30,6 +33,30 @@
     <ClInclude Include="hooks.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\vendor\imconfig.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\imgui.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\imgui_impl_dx8.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\imgui_impl_win32.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\imgui_internal.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\imstb_rectpack.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\imstb_textedit.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vendor\imstb_truetype.h">
+      <Filter>vendor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -40,6 +67,27 @@
     </ClCompile>
     <ClCompile Include="proxy.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vendor\imgui.cpp">
+      <Filter>vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vendor\imgui_demo.cpp">
+      <Filter>vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vendor\imgui_draw.cpp">
+      <Filter>vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vendor\imgui_impl_dx8.cpp">
+      <Filter>vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vendor\imgui_impl_win32.cpp">
+      <Filter>vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vendor\imgui_tables.cpp">
+      <Filter>vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vendor\imgui_widgets.cpp">
+      <Filter>vendor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

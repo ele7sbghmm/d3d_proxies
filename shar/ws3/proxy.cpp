@@ -23,12 +23,11 @@ void proxy::hook()
 IDirect3D8* proxy::call(std::uint32_t SDKVersion) const
 {
     if (!m_oDirect3DCreate8) return nullptr;
-
+      
     IDirect3D8* d3d = m_oDirect3DCreate8(SDKVersion);
     if (!d3d) return nullptr;
 
-    server s{};
-    std::thread(s.run).detach();
+    std::thread([]() { server::run(); }).detach();
 
     return d3d;
 }

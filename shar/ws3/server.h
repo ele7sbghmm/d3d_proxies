@@ -1,16 +1,16 @@
 #pragma once
 
-#include <fstream>
-#include <sstream>
-#include <string>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-
-#include "resource.h"
+#pragma comment(lib, "ws2_32.lib")
 
 class server
 {
-    void serve_html(SOCKET client);
-    void run();
+public:
+    static void serve_not_ready(SOCKET client);
+    static void serve_html(SOCKET client);
+    static void serve_js(SOCKET client);
+    static void serve_fences(SOCKET client);
+    static void handle_client(SOCKET client);
+    static void run();
 };
-

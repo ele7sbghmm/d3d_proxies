@@ -93,6 +93,9 @@
       <AdditionalLibraryDirectories>../vendor</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>d3d8.def</ModuleDefinitionFile>
     </Link>
+    <PreBuildEvent>
+      <Command>python embed.py</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -148,10 +151,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="hooks.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="proxy.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="server.h" />
+    <ClInclude Include="shar.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -166,14 +170,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="d3d8.def" />
-    <None Include="html1.htm">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
-    <None Include="index.html" />
+    <None Include="embed.py" />
     <None Include="index.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

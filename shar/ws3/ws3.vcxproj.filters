@@ -27,8 +27,11 @@
     <ClInclude Include="server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="shar.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,17 +52,9 @@
     <None Include="d3d8.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="index.html">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="index.js">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </None>
-    <None Include="html1.htm" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="resource.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <None Include="embed.py" />
   </ItemGroup>
 </Project>

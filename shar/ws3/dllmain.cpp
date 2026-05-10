@@ -1,17 +1,9 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 
 #include "server.h"
 
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  reason, LPVOID)
 {
-    if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
-        server s{};
-        s.start();
-    }
+    if (reason == DLL_PROCESS_ATTACH) { }
     return TRUE;
 }
-

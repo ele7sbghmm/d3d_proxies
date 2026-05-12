@@ -178,6 +178,7 @@ public:
             "<h1>workin'</h1>\r\n"
             "<script>\r\n"
             "console.log('workin\\'');\r\n"
+            "const ws = new WebSocket('ws://"
             "</script>\r\n</body></html>";
         std::string http =
             "HTTP/1.1 200 OK\r\n"

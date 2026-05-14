@@ -192,38 +192,20 @@ public:
     static void run()
     {
         WSADATA wsa{};
-        if (WSAStartup(MAKEWORD(2, 2), &wsa))
-        {
-            std::cerr << "WSAStartup failed\n";
-            return;
-        }
+        WSAStartup(MAKEWORD(2, 2), &wsa);
 
         SOCKET srv = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        if (srv == INVALID_SOCKET)
-        {
-            std::cerr << "socket() failed: " << WSAGetLastError() << "\n";
-            WSACleanup();
-            return;
-        }
 
         int opt = 1;
         setsockopt(srv, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
 
         sockaddr_in addr{};
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(static_cast<u_short>(9001));
+        addr.sin_port = htons(9001);
         addr.sin_addr.s_addr = INADDR_ANY;
 
-        if (bind(srv, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR)
-        {
-            std::cerr << "bind() failed: " << WSAGetLastError() << "\n";
-            closesocket(srv);
-            WSACleanup();
-            return;
-        }
-
+        bind(srv, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
         listen(srv, 5);
-        std::cout << "WebSocket server listening on ws://localhost:9001\n";
 
         while (true)
         {
@@ -236,11 +218,7 @@ public:
             inet_ntop(AF_INET, &cli.sin_addr, ip, sizeof(ip));
             std::cout << "Client connected: " << ip << "\n";
 
-            if (!do_handshake(cfd))
-            {
-                closesocket(cfd); continue;
-            }
-
+            do_handshake(cfd);
             send_text(cfd, "Hello from C++ WebSocket server!");
 
             while (true)

@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Dll1.vcxproj" Id="557c11d9-4baa-428c-9039-663d7cd18867" />
+</Solution>

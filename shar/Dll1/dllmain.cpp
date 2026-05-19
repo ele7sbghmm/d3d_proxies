@@ -2,7 +2,7 @@
 #include "pch.h"
 
 #include <d3d8.h>
-#pragma comment(linker, "/export:Direct3DCreate8:_Direct3DCreate8@4")
+#pragma comment(linker, "/export:Direct3DCreate8=_Direct3DCreate8@4")
 
 IDirect3D8* __stdcall Direct3DCreate8(UINT SDKVersion)
 {

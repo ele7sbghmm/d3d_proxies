@@ -21,6 +21,15 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shar.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="draw.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hooks.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

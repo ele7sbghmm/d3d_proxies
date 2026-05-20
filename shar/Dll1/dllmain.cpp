@@ -1,9 +1,10 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 
-#include <d3d8.h>
-
 #pragma comment(linker, "/export:Direct3DCreate8=_Direct3DCreate8@4")
+
+#include <d3d8.h>
+#include "hooks.h"
 
 extern "C" IDirect3D8* __stdcall Direct3DCreate8(UINT SDKVersion) {
     using Direct3DCreate8_t = IDirect3D8 * (__stdcall*)(UINT);
@@ -21,6 +22,8 @@ extern "C" IDirect3D8* __stdcall Direct3DCreate8(UINT SDKVersion) {
 
     IDirect3D8* d3d = oDirect3DCreate8(SDKVersion);
     if (!d3d) return nullptr;
+
+    hooks::inject();
 
     return d3d;
 }

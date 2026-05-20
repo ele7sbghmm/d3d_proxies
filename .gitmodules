@@ -1,0 +1,6 @@
+[submodule "vendor/minhook"]
+	path = vendor/minhook
+	url = https://github.com/TsudaKageyu/minhook
+[submodule "vendor/directx8"]
+	path = vendor/directx8
+	url = https://github.com/edgeforce/directx8

@@ -43,6 +43,44 @@ namespace hooks {
 		}
 	}
 
+	namespace fcompp {
+		void __stdcall Fcompp(float rangeSq, float distSq,
+			float sumRadius, float centerX, float centerY, float centerZ) {
+			g_draw.Init();
+			D3DXVECTOR3 center{ centerX, centerY, centerZ };
+			D3DCOLOR c = distSq < rangeSq ? 0xff00ffff : 0xff000000;
+			if (distSq < rangeSq) g_draw.m_data.AddCircle(center, sumRadius, c);
+		}
+		void* addr = (void*)0x511cb0;
+		void* orig = nullptr;
+		__declspec(naked) void hook() {
+			__asm {
+				pushad
+
+				push [esp + 0x40]
+				push [esp + 0x40]
+				push [esp + 0x40]
+				
+				sub esp, 0xc
+				fst float ptr [esp + 0]
+				fxch st(1)
+				fst float ptr [esp + 4]
+				fxch st(1)
+				fxch st(2)
+				fst float ptr [esp + 8]
+				fxch st(2)
+
+				call Fcompp
+
+				popad
+				jmp orig
+			}
+		}
+		void inject() {
+			MH_CreateHook(addr, hook, (void**)&orig);
+			MH_EnableHook(addr);
+		}
+	}
 	namespace render_transparent {
 		void __stdcall draw_stuff() {
 			g_draw.DrawStuff();
@@ -69,7 +107,8 @@ namespace hooks {
 	void inject() {
 		MH_Initialize();
 
-		test_volume::inject();
+		//test_volume::inject();
+		fcompp::inject();
 		render_transparent::inject();
 	}
 }

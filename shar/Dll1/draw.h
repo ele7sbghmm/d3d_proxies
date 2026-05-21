@@ -13,13 +13,13 @@ public:
 	IDirect3DVertexBuffer8* m_vb{};
 	Vtx* m_vtxData = nullptr;
 	size_t m_vtxCount = 0;
-	static constexpr size_t MAX_VTX = 10000;
+	static constexpr size_t MAX_VTX = 1000000;
 
 	Data() = default;
 	void Init() {
 		IDirect3DDevice8* device = shar::d3dDisplay::get_()->d3dDevice;
 		
-		device->CreateVertexBuffer(10000 * sizeof(Vtx), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, Vtx::FVF, D3DPOOL_DEFAULT, &m_vb);
+		device->CreateVertexBuffer(MAX_VTX * sizeof(Vtx), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, Vtx::FVF, D3DPOOL_DEFAULT, &m_vb);
 	
 		Begin();
 	}
@@ -80,6 +80,7 @@ public:
 		device->SetStreamSource(0, m_data.m_vb, sizeof(Vtx));
 		device->SetVertexShader(Vtx::FVF);
 
+		device->SetTexture(0, NULL);
 		device->SetRenderState(D3DRS_ZENABLE, FALSE);
 		device->SetRenderState(D3DRS_COLORVERTEX, TRUE);
 		device->SetRenderState(D3DRS_LIGHTING, FALSE);

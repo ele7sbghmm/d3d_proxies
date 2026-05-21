@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <d3dx8.h>
 
+using uptr = std::uintptr_t;
 using u64 = std::uint64_t;
 using u32 = std::uint32_t;
 using i32 = std::int32_t;
@@ -55,7 +56,10 @@ namespace shar {
     }; // 0x3c
 
     struct TriggerVolume {
-        u8 pad[0x28]; // IEntityDSG
+        static constexpr uptr RECT_VFTABLE = 0x606ffc;
+
+        void** vfptr;
+        u8 pad[0x24]; // IEntityDSG
         TriggerLocator* mLocator;
         rmt::Vector mPosition;
         u8 mTrackingPlayers;

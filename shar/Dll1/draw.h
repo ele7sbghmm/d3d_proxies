@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3dx8.h>
+#pragma comment(lib, "d3dx8.lib")
 
 struct Vtx {
 	D3DXVECTOR3 xyz;
@@ -55,9 +56,18 @@ public:
 		x.x += extent; nx.x -= extent;
 		y.y += extent; ny.y -= extent;
 		z.z += extent; nz.z -= extent;
-		g_draw.m_data.AddLine(x, nx, color);
-		g_draw.m_data.AddLine(y, ny, color);
-		g_draw.m_data.AddLine(z, nz, color);
+		AddLine(x, nx, color);
+		AddLine(y, ny, color);
+		AddLine(z, nz, color);
+	}
+	void DrawTeethLine(D3DXVECTOR3& start, D3DXVECTOR3& end, float extent, D3DCOLOR color) {
+		D3DXVECTOR3 delta = end - start;
+		D3DXVECTOR3 dir;
+		D3DXVec3Normalize(&dir, &delta);
+		D3DXVECTOR3 startIn = start + dir * extent;
+		D3DXVECTOR3 endIn = end - dir * extent;
+		AddLine(start, startIn, color);
+		AddLine(end, endIn, color);
 	}
 };
 
@@ -82,9 +92,6 @@ public:
 	}
 	void DrawStuff() {
 		Init();
-
-		m_data.AddLine(*shar::TriggerVolumeTracker::p_sP1, *shar::TriggerVolumeTracker::p_sP2, 0xffff0000);
-		m_data.AddLine(*shar::TriggerVolumeTracker::p_sP3, *shar::TriggerVolumeTracker::p_sP4, 0xffff0000);
 
 		m_data.End();
 		

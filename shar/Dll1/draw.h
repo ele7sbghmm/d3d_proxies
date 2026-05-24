@@ -48,6 +48,17 @@ public:
 			m_vtxData[m_vtxCount++] = { { x, center.y, z }, c };
 		}
 	}
+	void DrawCross(D3DXVECTOR3& center, float extent, D3DCOLOR color) {
+		D3DXVECTOR3 x = center; D3DXVECTOR3 nx = center;
+		D3DXVECTOR3 y = center; D3DXVECTOR3 ny = center;
+		D3DXVECTOR3 z = center; D3DXVECTOR3 nz = center;
+		x.x += extent; nx.x -= extent;
+		y.y += extent; ny.y -= extent;
+		z.z += extent; nz.z -= extent;
+		g_draw.m_data.AddLine(x, nx, color);
+		g_draw.m_data.AddLine(y, ny, color);
+		g_draw.m_data.AddLine(z, nz, color);
+	}
 };
 
 class Draw {
@@ -72,6 +83,9 @@ public:
 	void DrawStuff() {
 		Init();
 
+		m_data.AddLine(*shar::TriggerVolumeTracker::p_sP1, *shar::TriggerVolumeTracker::p_sP2, 0xffff0000);
+		m_data.AddLine(*shar::TriggerVolumeTracker::p_sP3, *shar::TriggerVolumeTracker::p_sP4, 0xffff0000);
+
 		m_data.End();
 		
 		IDirect3DDevice8* device = shar::d3dDisplay::get_()->d3dDevice;
@@ -91,6 +105,50 @@ public:
 		device->ApplyStateBlock(m_sbt);
 
 		m_data.Begin();
+	}
+	void DrawTriggerVolume(shar::TriggerVolume* volume, float rangeSq, float distSq, float sumRadius) {
+		Init();
+
+		bool active = distSq < rangeSq;
+		if (!active) return;
+
+		shar::TriggerVolume::Type type = volume->GetType();
+		if (type == shar::TriggerVolume::RECTANGLE)
+			DrawRectTriggerVolume(volume, active);
+	}
+	void DrawRectTriggerVolume(shar::TriggerVolume* volume, bool active) {
+		if (!active) return;
+
+		D3DCOLOR color = active ? 0xff00ffff : 0xff0000ff;
+		shar::RectTriggerVolume* rect = static_cast<shar::RectTriggerVolume*>(volume);
+		
+		D3DXVECTOR3& center = rect->mPosition;
+		D3DXVECTOR3 aX = rect->mExtentX * rect->mAxisX;
+		D3DXVECTOR3 aY = rect->mExtentY * rect->mAxisY;
+		D3DXVECTOR3 aZ = rect->mExtentZ * rect->mAxisZ;
+		D3DXVECTOR3 c[8] = {
+			center + aX + aY + aZ,
+			center - aX + aY + aZ,
+			center + aX - aY + aZ,
+			center - aX - aY + aZ,
+			center + aX + aY - aZ,
+			center - aX + aY - aZ,
+			center + aX - aY - aZ,
+			center - aX - aY - aZ,
+		};
+
+		m_data.AddLine(c[0], c[1], color);
+		m_data.AddLine(c[1], c[3], color);
+		m_data.AddLine(c[3], c[2], color);
+		m_data.AddLine(c[2], c[0], color);
+		m_data.AddLine(c[4], c[5], color);
+		m_data.AddLine(c[5], c[7], color);
+		m_data.AddLine(c[7], c[6], color);
+		m_data.AddLine(c[6], c[4], color);
+		m_data.AddLine(c[0], c[4], color);
+		m_data.AddLine(c[1], c[5], color);
+		m_data.AddLine(c[2], c[6], color);
+		m_data.AddLine(c[3], c[7], color);
 	}
 };
 

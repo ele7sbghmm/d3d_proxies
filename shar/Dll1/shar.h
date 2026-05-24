@@ -25,6 +25,27 @@ namespace shar {
         };
     }
 
+    namespace LocatorType {
+        enum Type {
+            EVENT,
+            SCRIPT,
+            GENERIC,
+            CAR_START,
+            SPLINE,
+            DYNAMIC_ZONE,
+            OCCLUSION,
+            INTERIOR_ENTRANCE,
+            DIRECTIONAL,
+            ACTION,
+            FOV,
+            BREAKABLE_CAMERA,
+            STATIC_CAMERA,
+            PED_GROUP,
+            COIN,
+            SPAWN_POINT,
+        };
+    }
+
     struct d3dDisplay {
         u8 pad[0x120];
         IDirect3DDevice8* d3dDevice;
@@ -56,7 +77,7 @@ namespace shar {
     }; // 0x3c
 
     struct TriggerVolume {
-        static constexpr uptr RECT_VFTABLE = 0x606ffc;
+        enum Type { SPHERE, RECTANGLE };
 
         void** vfptr;
         u8 pad[0x24]; // IEntityDSG
@@ -66,6 +87,11 @@ namespace shar {
         u8 pad2[3];
         u32 mFrameUsed;
         i32 mUser;
+
+        Type GetType() {
+            using Fn = Type(*)();
+            return ((Fn)vfptr[24])();
+        }
     }; // 0x44
 
     struct RectTriggerVolume : TriggerVolume {
@@ -96,10 +122,19 @@ namespace shar {
         bool mIgnoreTriggers;
         u8 pad2[3];
 
+        static rmt::Vector* p_sP1;
+        static rmt::Vector* p_sP2;
+        static rmt::Vector* p_sP3;
+        static rmt::Vector* p_sP4;
+
         static TriggerVolumeTracker* GetInstance() {
             return *reinterpret_cast<TriggerVolumeTracker**>(0x6c8410);
         }
     };
+    rmt::Vector* TriggerVolumeTracker::p_sP1 = (rmt::Vector*)0x6c9190;
+    rmt::Vector* TriggerVolumeTracker::p_sP2 = (rmt::Vector*)0x6c919c;
+    rmt::Vector* TriggerVolumeTracker::p_sP3 = (rmt::Vector*)0x6c91a8;
+    rmt::Vector* TriggerVolumeTracker::p_sP4 = (rmt::Vector*)0x6c91b4;
 
 #pragma pack(pop)
 }

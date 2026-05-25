@@ -3,6 +3,7 @@ with open('index.html', 'rb') as html:
 with open('index.js', 'rb') as js:
     js = js.read()
 with open('www.hpp', 'wt') as w:
+    w.wreite('#pragma once\n')
     w.write(f'const int index_html_size = 0x{len(html):x};\n')
     w.write('const unsigned char index_html[] = { ')
     w.write(', '.join([f'0x{x:02x}' for x in html]))

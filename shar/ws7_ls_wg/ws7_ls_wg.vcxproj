@@ -95,7 +95,7 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PreBuildEvent>
-      <Command>python embed.py</Command>
+      <Command>$(ProjectDir)www\embed.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -166,6 +166,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="server.hpp" />
+    <ClInclude Include="shar.hpp" />
     <ClInclude Include="www.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +179,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="embed.py" />
-    <None Include="index.html" />
-    <None Include="index.js" />
+    <None Include="embed.ts" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

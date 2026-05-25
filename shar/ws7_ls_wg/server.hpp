@@ -1,3 +1,4 @@
+#pragma once
 
 #include <string>
 
@@ -7,7 +8,7 @@
 
 #include "www.hpp"
 
-std::string header(int code, std::string& mime, int len) {
+std::string header(int code, const char* mime, int len) {
 	std::string http =
 		"HTTP/1.1 " + std::to_string(code) + " OK\r\n"
 		"Content-Type: " + mime + "\r\n"
@@ -18,16 +19,14 @@ std::string header(int code, std::string& mime, int len) {
 
 void serve_html(SOCKET client) {
 	std::string html((const char*)index_html, index_html_size);
-	std::string mime = "text/html";
-	std::string http = header(200, mime, index_html_size);
+	std::string http = header(200, "text/html", index_html_size);
 	send(client, http.c_str(), http.size(), 0);
 	send(client, html.c_str(), html.size(), 0);
 }
 
 void serve_js(SOCKET client) {
 	std::string js((const char*)index_js, index_js_size);
-	std::string mime = "application/javascript";
-	std::string http = header(200, mime, index_js_size);
+	std::string http = header(200, "application/javascript", index_js_size);
 	send(client, http.c_str(), http.size(), 0);
 	send(client, js.c_str(), js.size(), 0);
 }

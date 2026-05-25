@@ -27,6 +27,9 @@
     <ClInclude Include="www.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="shar.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -37,13 +40,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="index.html">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="index.js">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="embed.py">
+    <None Include="embed.ts">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

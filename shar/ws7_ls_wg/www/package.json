@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@webgpu/types": "^0.1.70",
+    "ts-node": "^10.9.2"
+  }
+}

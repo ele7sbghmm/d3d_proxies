@@ -17,6 +17,23 @@ std::string header(int code, const char* mime, int len) {
 	return http;
 }
 
+void serve_fenecs(SOCKET client) {
+	auto rm = shar::RenderManager::GetInstance();
+	if (!rm) return;
+	auto* wrl = rm->_wrl;
+	auto* dlls = wrl->mLoadLists.mpData[0];
+	
+	for (int i = dlls->mFenceElems.mpData; --i < dlls->mFenceElems.mUseSize;) {
+
+	}
+}
+
+void serve_lines(SOCKET client, D3DXVECTOR3* vertices, std::size_t count) {
+	std::string http = header(200, "application/octetstream", sizeof(D3DXVECTOR3) * count);
+	send(client, http.c_str(), http.size(), 0);
+
+}
+
 void serve_html(SOCKET client) {
 	std::string html((const char*)index_html, index_html_size);
 	std::string http = header(200, "text/html", index_html_size);

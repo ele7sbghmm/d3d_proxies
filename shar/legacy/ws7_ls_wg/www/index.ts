@@ -1,16 +1,15 @@
 async function main() {
+    console.log('foo')
     console.log('navigator: ', navigator)
     console.log('gpu: ', navigator.gpu)
-    const adapter = await navigator?.gpu.requestAdapter()
+    const adapter = await navigator.gpu.requestAdapter()
     console.log('adapter: ', adapter)
     if (!adapter) return;
     const device = await adapter.requestDevice()
     const format = navigator.gpu.getPreferredCanvasFormat()
 
     const canvas = document.querySelector('canvas')
-    if (!canvas) return;
-    const context = canvas.getContext('webgpu') as GPUCanvasContext
-    if (!context) return;
+    const context = canvas!.getContext('webgpu') as GPUCanvasContext
     context.configure({ device, format })
 
     const vert_wgsl = `

@@ -20,11 +20,10 @@ extern "C" IDirect3D8* WINAPI Direct3DCreate8(UINT SDKVersion) {
         if (!hModule) return nullptr;
         oDirect3DCreate8 = (Direct3DCreate8_t)GetProcAddress(hModule, "Direct3DCreate8");
         if (!oDirect3DCreate8) return nullptr;
-
     }
 
+
     IDirect3D8* d3d = oDirect3DCreate8(SDKVersion);
-    
     return d3d;
 }
 

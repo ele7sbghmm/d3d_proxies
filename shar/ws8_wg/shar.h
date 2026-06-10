@@ -2,8 +2,6 @@
 
 #include <d3dx8.h>
 
-
-
 namespace shar {
 #pragma push(pack, 1)
 	namespace rmt {
@@ -11,6 +9,11 @@ namespace shar {
 	}
 
 	template <typename T> struct SwapArray { int mSize, mUseSize; T* mpData; T mSwapT; };
+
+	struct RoadSegment {
+		char pad[0x30];
+		rmt::Vector mCorners[4];
+	};
 
 	struct FenceEntityDSG {
 		char pad[0x3c];
@@ -20,6 +23,8 @@ namespace shar {
 	struct DynaLoadListDSG {
 		char pad[0x58];
 		SwapArray<FenceEntityDSG*> mFenceElems;
+		char pad1[0x30];
+		SwapArray<RoadSegment*> mRoadSegmentElems;
 	};
 
 	struct WorldRenderLayer {

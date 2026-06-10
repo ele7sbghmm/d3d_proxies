@@ -26,6 +26,8 @@ namespace svr {
 	}
 
 	void fetch_vertices(std::vector<Vtx>& vertices) {
+		D3DCOLOR red = 0xffff0000, yellow = 0xffffff00;
+
 		auto* rm = shar::RenderManager::GetInstance();
 		if (!rm || !rm->wrl_ || !rm->wrl_->mStaticLoadLists.mUseSize) return;
 
@@ -35,18 +37,37 @@ namespace svr {
 			auto* fence = fenceArray.mpData[i];
 			D3DXVECTOR3& s = fence->mStartPoint;
 			D3DXVECTOR3& e = fence->mEndPoint;
-			vertices.push_back({ { s.x, 0, s.z }, 1});
-			vertices.push_back({ { e.x, 0, e.z }, 1});
+			vertices.push_back({ { s.x, 0, s.z }, red});
+			vertices.push_back({ { e.x, 0, e.z }, red});
+		}
+
+
+		shar::SwapArray<shar::RoadSegment*> roads
+			= rm->wrl_->mStaticLoadLists.mpData->mRoadSegmentElems;
+		for (int i = roads.mUseSize; 0 < i--;) {
+			auto* road = roads.mpData[i];
+			auto& a = road->mCorners[0];
+			auto& b = road->mCorners[1];
+			auto& c = road->mCorners[2];
+			auto& d = road->mCorners[3];
+
+			vertices.push_back({ a, yellow });
+			vertices.push_back({ b, yellow });
+			vertices.push_back({ b, yellow });
+			vertices.push_back({ c, yellow });
+			vertices.push_back({ c, yellow });
+			vertices.push_back({ d, yellow });
+			vertices.push_back({ d, yellow });
+			vertices.push_back({ a, yellow });
 		}
 	}
-
+	
 	void handle_client(SOCKET client) {
 		char buf[4096]{};
 		int received = recv(client, buf, sizeof(buf), 0);
 		if (received <= 0) return;
 
 		std::string str{ buf, (std::size_t)received };
-		
 
 		if (str.contains("GET /fences")) {
 			std::vector<Vtx> vertices;
@@ -80,7 +101,6 @@ namespace svr {
 		addr.sin_family = AF_INET;
 		addr.sin_port = htons(9001);
 		addr.sin_addr.s_addr = INADDR_ANY;
-
 
 		bind(server, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
 		listen(server, 100);

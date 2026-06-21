@@ -23,10 +23,9 @@ struct Vtx {
 
 namespace svr {
 	std::string header(std::string code, std::string mime, int length) {
-		return	"HTTP/1.1 " + code + "\r\n" +
-				"Content-Type: " + mime + "\r\n" +
-				"Content-Length: " + std::to_string(length) + "\r\n" +
-				"\r\n";
+		return "HTTP/1.1 " + code + "\r\n" +
+			"Content-Type: " + mime + "\r\n" +
+			"Content-Length: " + std::to_string(length) + "\r\n\r\n";
 	}
 
 	std::string sha1_base64(const std::string& input) {
@@ -72,7 +71,7 @@ namespace svr {
 
 	std::string read_frame(SOCKET client) {
 		std::uint8_t header[2]{};
-		if (recv_all(client, header, 2) != 2) return;
+		if (recv_all(client, header, 2) != 2) return {};
 
 		std::uint8_t opcode = header[0] & 0xf;
 		bool masked = (header[1] & 0x80) != 0;
@@ -189,8 +188,9 @@ namespace svr {
 
 		while (true) {
 			SOCKET client = accept(server, nullptr, nullptr); 
-			bool keep_alive = handle_client(client);
-			if (!keep_alive) closesocket(client);
+			if (client == INVALID_SOCKET) continue;
+
+			std::jthread worker(handle_client, client).detach();
 		}
 
 		WSACleanup();

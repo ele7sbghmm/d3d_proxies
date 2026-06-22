@@ -4,3 +4,6 @@
 [submodule "vendor/directx8"]
 	path = vendor/directx8
 	url = https://github.com/edgeforce/directx8
+[submodule "vendor/DirectX-SDK"]
+	path = vendor/DirectX-SDK
+	url = https://github.com/ReactiioN1337/DirectX-SDK

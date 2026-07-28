@@ -39,17 +39,39 @@ public:
     }
     void Begin()
     {
+        if (!m_inited)
+            Init();
         m_vtx = nullptr;
-        size_t m_n = 0;
+        m_n = 0;
 
-        m_vb->Lock(0, 0, (void**)m_vtx, D3DLOCK_NOOVERWRITE);
+        m_vb->Lock(0, 0, (void**)&m_vtx, D3DLOCK_DISCARD);
+
+        m_vtx[m_n++] = { { 0, -1000, 100 }, 0xffff0000 };
+        m_vtx[m_n++] = { { 0,  1000, 100 }, 0xffff0000 };
+        m_vtx[m_n++] = { { -1000, 0, 100 }, 0xffff0000 };
+        m_vtx[m_n++] = { {  1000, 0, 100 }, 0xffff0000 };
     }
     void Flush()
     {
         m_vb->Unlock();
 
-        
+        m_sb->Capture();
+        m_device->SetRenderState(D3DRS_LIGHTING, FALSE);
+        m_device->SetRenderState(D3DRS_COLORVERTEX, TRUE);
+        m_device->SetRenderState(D3DRS_ZENABLE, TRUE);
+        m_device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+        m_device->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+        m_device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+        m_device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+        m_device->SetTexture(0, nullptr);
+        m_device->SetVertexShader(nullptr);
+        m_device->SetPixelShader(nullptr);
+        m_device->SetFVF(Vtx::FVF);
+        m_device->SetStreamSource(0, m_vb, 0, sizeof(Vtx));
+        m_device->DrawPrimitive(D3DPT_LINELIST, 0, m_n / 2);
+        m_sb->Apply();
     }
 };
 
-inline Drawer g_drawer{};
+inline Drawer g_Drawer{};

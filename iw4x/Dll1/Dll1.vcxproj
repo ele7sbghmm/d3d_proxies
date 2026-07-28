@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="draw.hpp" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="hooker.hpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

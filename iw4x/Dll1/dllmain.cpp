@@ -3,11 +3,13 @@
 
 #include <d3d9.h>
 #include <iostream>
-
 #pragma comment(linker, "/export:Direct3DCreate9=_Direct3DCreate9@4")
 #pragma comment(linker, "/export:Direct3DCreate9Ex=_Direct3DCreate9Ex@8")
 
-//extern Drawer g_drawer;
+#include "draw.hpp"
+#include "hooker.hpp"
+
+extern Drawer g_Drawer;
 
 using CreateDevice_t = HRESULT(__stdcall*)(IDirect3D9*, UINT, D3DDEVTYPE, HWND, DWORD, D3DPRESENT_PARAMETERS*, IDirect3DDevice9**);
 using EndScene_t = HRESULT(__stdcall*)(IDirect3DDevice9*);
@@ -26,7 +28,6 @@ HRESULT __stdcall hDrawPrimitive(IDirect3DDevice9* device, D3DPRIMITIVETYPE pt,
     UINT si, UINT pc)
 {
     dp_n++;
-    printf("dpdpdp\n");
     return oDrawPrimitive(device, pt, si, pc);
 }
 
@@ -34,7 +35,9 @@ HRESULT __stdcall hDrawIndexedPrimitive(IDirect3DDevice9* device,
     D3DPRIMITIVETYPE pt, INT bvi, UINT mvi, UINT nv, UINT si, UINT pc)
 {
     dip_n++;
-    return oDrawIndexedPrimitive(device, pt, bvi, mvi, nv, si, pc);
+    HRESULT hr = oDrawIndexedPrimitive(device, pt, bvi, mvi, nv, si, pc);
+
+    return hr;
 }
 
 HRESULT __stdcall hEndScene(IDirect3DDevice9* device)
@@ -59,7 +62,7 @@ HRESULT __stdcall hCreateDevice(IDirect3D9* d3d9, UINT Adapter,
     HRESULT hr = oCreateDevice(d3d9, Adapter, DeviceType, hWnd, BehaviorFlags,
         pPresentationParameters, ppReturnedDeviceInterface);
 
-    //g_Drawer = { *ppReturnedDeviceInterface };
+    g_Drawer = { *ppReturnedDeviceInterface };
 
     void** vftable = *(void***)*ppReturnedDeviceInterface;
 
@@ -121,6 +124,8 @@ extern "C" IDirect3D9* __stdcall Direct3DCreate9(UINT SDKVersion)
         VirtualProtect(&vftable[16], 4, old, &old);
     }
 
+    Hooker::Init();
+
     return d3d9;
 }
 
@@ -144,4 +149,3 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     }
     return TRUE;
 }
-

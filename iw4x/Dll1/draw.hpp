@@ -45,11 +45,11 @@ public:
         m_n = 0;
 
         m_vb->Lock(0, 0, (void**)&m_vtx, D3DLOCK_DISCARD);
-
-        m_vtx[m_n++] = { { 0, -1000, 100 }, 0xffff0000 };
-        m_vtx[m_n++] = { { 0,  1000, 100 }, 0xffff0000 };
-        m_vtx[m_n++] = { { -1000, 0, 100 }, 0xffff0000 };
-        m_vtx[m_n++] = { {  1000, 0, 100 }, 0xffff0000 };
+    }
+    void Line(D3DXVECTOR3 a, D3DXVECTOR3 b, D3DCOLOR c)
+    {
+        m_vtx[m_n++] = { a, c };
+        m_vtx[m_n++] = { b, c };
     }
     void Flush()
     {

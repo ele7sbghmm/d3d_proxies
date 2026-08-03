@@ -19,6 +19,10 @@ HRESULT __stdcall hCreateDevice(IDirect3D9* d3d9, UINT Adapter, D3DDEVTYPE Devic
     void** vftable = *(void***)*ppReturnedDeviceInterface;
 
     g_draw = { *ppReturnedDeviceInterface };
+
+    MH_Initialize();
+    MH_CreateHook(I::addr, (void*)I::hook, (void**)&I::orig);
+    MH_EnableHook(I::addr);
     
     return hr;
 }
@@ -50,8 +54,6 @@ extern "C" IDirect3D9* __stdcall Direct3DCreate9(UINT SDKVersion)
         oCreateDevice = (CreateDevice_t)vftable[16];
         vftable[16] = &hCreateDevice;
         VirtualProtect(&vftable[16], 4, old, &old);
-
-        Hooks::install();
     }
 
     return d3d9;

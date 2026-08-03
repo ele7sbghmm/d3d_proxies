@@ -162,6 +162,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="hooks.hpp" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="types.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

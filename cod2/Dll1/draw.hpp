@@ -2,11 +2,15 @@
 
 #include "d3d9.h"
 
+#include "types.hpp"
+
 struct Vtx
 {
 	float x, y, z;
 	D3DCOLOR c;
 };
+
+inline GfxViewParms g_parms = {};
 
 class Drawer
 {
@@ -33,16 +37,15 @@ public:
 			Init();
 
 		Vtx v[6] = {
-			{  100000, 0, 0, 0xffff0000 },
-			{ -100000, 0, 0, 0xffff0000 },
-			{ 0,  100000, 0, 0xffff0000 },
-			{ 0, -100000, 0, 0xffff0000 },
+			{  100000, 0, 666, 0xffff0000 },
+			{ -100000, 0, 666, 0xffff0000 },
+			{ 0,  100000, 666, 0xffff0000 },
+			{ 0, -100000, 666, 0xffff0000 },
 			{ 0, 0,  100000, 0xffff0000 },
 			{ 0, 0, -100000, 0xffff0000 }
 		};
 
-		//m_sb->Capture();
-
+		m_sb->Capture();
 		m_device->SetRenderState(D3DRS_LIGHTING, FALSE);
 		m_device->SetRenderState(D3DRS_COLORVERTEX, TRUE);
 		m_device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
@@ -55,8 +58,7 @@ public:
 		m_device->SetPixelShader(nullptr);
 		m_device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 		m_device->DrawPrimitiveUP(D3DPT_LINELIST, 3, v, sizeof(Vtx));
-
-		//m_sb->Apply();
+		m_sb->Apply();
 	}
 };
 

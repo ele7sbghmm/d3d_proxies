@@ -19,7 +19,7 @@ namespace Hooks
 	}
 	namespace A
 	{
-		void* addr = (void*)0x100349c0;
+		void* addr = (void*)0x10032108;
 		void* orig = nullptr;
 		__declspec(naked) void hook()
 		{
@@ -35,6 +35,28 @@ namespace Hooks
 
 }
 
+void __stdcall AddCustomLine()
+{
+	float p1[3] = { 0.0f, 0.0f, -10000.0f };
+	float p2[3] = { 0.0f, 0.0f, 10000.0f };
+	float p3[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	int p4 = 0;
+	int p5 = 1;
+	int p6 = 0;
+
+	uintptr_t addr = 0x412300;
+	__asm
+	{
+		push p6
+		push p5
+		push p4
+		lea esi, p3
+		lea edi, p2
+		lea ebx, p1
+		call addr
+		add esp, 12
+	}
+}
 
 void __stdcall install()
 {
@@ -54,6 +76,7 @@ namespace I
 		__asm
 		{
 			pushad
+			call AddCustomLine
 			call install
 			popad
 			jmp orig

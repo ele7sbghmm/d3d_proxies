@@ -44,18 +44,18 @@ public:
 			{       0.f,       0.f,  100000.f, 0xffff0000 },
 			{       0.f,       0.f, -100000.f, 0xffff0000 }
 		};
-
+		
 		m_sb->Capture();
-		m_device->SetRenderState(D3DRS_LIGHTING, FALSE);
-		m_device->SetRenderState(D3DRS_COLORVERTEX, TRUE);
-		m_device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-		m_device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-		m_device->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-		m_device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-		m_device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+		//m_device->SetRenderState(D3DRS_LIGHTING, FALSE);
+		//m_device->SetRenderState(D3DRS_COLORVERTEX, TRUE);
+		//m_device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+		//m_device->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+		//m_device->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+		//m_device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+		//m_device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
-		m_device->SetVertexShader(nullptr);
-		m_device->SetPixelShader(nullptr);
+		//m_device->SetVertexShader(nullptr);
+		//m_device->SetPixelShader(nullptr);
 		m_device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 		m_device->DrawPrimitiveUP(D3DPT_LINELIST, 3, v, sizeof(Vtx));
 		m_sb->Apply();

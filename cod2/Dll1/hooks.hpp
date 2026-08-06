@@ -7,55 +7,28 @@
 #include "types.hpp"
 
 extern Drawer g_draw;
-extern GfxViewParms g_parms;
 
-bool linerender = false;
-namespace Hooks
+
+
+void __stdcall flush()
 {
-	bool installed = false;
+	g_draw.Flush();
+	printf("Surf\n");
+}
 
-	void __stdcall draw(int* esp)
+
+namespace S
+{
+	void* addr = (void*)0x1002f850;
+	void* orig = nullptr;
+	__declspec(naked) void hook()
 	{
-		if (*esp == 0x1003210D) {
-			g_draw.Flush();
-			linerender = false;
-		}
-	}
-	namespace A
-	{
-		void* addr = (void*)0x10038af6;
-		void* orig = nullptr;
-		__declspec(naked) void hook()
+		__asm
 		{
-			__asm
-			{
-				pushad
-				mov eax, esp
-				add eax, 0x7c + 0x20
-				push eax
-				call draw
-				popad
-				jmp orig
-			}
-		}
-	}
-	void __stdcall line()
-	{
-		linerender = true;
-	}
-	namespace L
-	{
-		void* addr = (void*)0x10031c10;
-		void* orig = nullptr;
-		__declspec(naked) void hook()
-		{
-			__asm
-			{
-				pushad
-				call line
-				popad
-				jmp orig
-			}
+			pushad
+			call flush
+			popad
+			jmp orig
 		}
 	}
 }
@@ -83,15 +56,15 @@ void __stdcall AddCustomLine()
 	}
 }
 
-void __stdcall install()
+bool installed = false;
+void _stdcall Install()
 {
-	if (Hooks::installed)
-		return;
-	MH_CreateHook(Hooks::A::addr, (void*)Hooks::A::hook, (void**)&Hooks::A::orig);
-	MH_EnableHook(Hooks::A::addr);
-	//MH_CreateHook(Hooks::L::addr, (void*)Hooks::L::hook, (void**)&Hooks::L::orig);
-	//MH_EnableHook(Hooks::L::addr);
-	Hooks::installed = true;
+	if (installed) return;
+
+	MH_CreateHook(S::addr, (void*)S::hook, (void**)&S::orig);
+	MH_EnableHook(S::addr);
+
+	installed = true;
 }
 
 namespace I
@@ -104,7 +77,7 @@ namespace I
 		{
 			pushad
 			call AddCustomLine
-			call install
+			call Install
 			popad
 			jmp orig
 		}

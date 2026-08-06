@@ -84,13 +84,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\..\vendor\minhook\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\vendor\minhook\include;../../vendor/DirectX-SDK/Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>..\..\vendor\minhook\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\vendor\minhook\lib;../../vendor/DirectX-SDK/Lib</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>

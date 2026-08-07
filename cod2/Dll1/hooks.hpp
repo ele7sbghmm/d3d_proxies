@@ -19,7 +19,7 @@ void __stdcall flush()
 
 namespace S
 {
-	void* addr = (void*)0x1002f850;
+	void* addr = (void*)0x10034217;
 	void* orig = nullptr;
 	__declspec(naked) void hook()
 	{

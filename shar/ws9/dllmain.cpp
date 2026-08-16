@@ -1,7 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 
-#include 
+#include <d3d8.h>
 
 extern "C" IDirect3D8* Direct3DCreate8(UINT SDKVersion)
 {
